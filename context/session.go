@@ -2,6 +2,7 @@ package ctx
 
 import (
 	"context"
+	"github.com/golang-jwt/jwt/v5"
 	coreError "github.com/harryosmar/go-echo-core/error"
 	"strconv"
 )
@@ -16,10 +17,17 @@ type (
 		Iat        int64    `json:"iat"`
 		Jti        string   `json:"jti"`
 		Privileges []string `json:"privileges"`
+		Role       Role     `json:"role"`
+	}
+
+	Role struct {
+		Id   int64  `json:"id"`
+		Code string `json:"code"`
 	}
 
 	Session interface {
 		GetUserId() string
+		GetRole() Role
 		GetUserIdInt64() (int64, error)
 		GetPrivileges() ([]string, error)
 		IsHasPrivilege(privilege string) error
@@ -29,12 +37,26 @@ type (
 	session struct {
 		UserId     string            `json:"id"`
 		Privileges map[string]string `json:"privileges"`
+		Role       Role              `json:"role"`
 	}
 )
+
+func (j JwtClaim) ToJwtClaim() *jwt.MapClaims {
+	return &jwt.MapClaims{
+		"sub":        j.Sub,
+		"iss":        j.Iss,
+		"iat":        j.Iat,
+		"exp":        j.Exp,
+		"jti":        j.Jti,
+		"privileges": j.Privileges,
+		"role":       j.Role,
+	}
+}
 
 func NewSession(jwt *JwtClaim) Session {
 	s := &session{UserId: jwt.Sub}
 	s.Privileges = s.privilegeListToMap(jwt.Privileges)
+	s.Role = jwt.Role
 	return s
 }
 
@@ -45,6 +67,10 @@ func (s session) privilegeListToMap(privileges []string) map[string]string {
 	}
 
 	return m
+}
+
+func (s session) GetRole() Role {
+	return s.Role
 }
 
 func (s session) GetUserId() string {
@@ -86,4 +112,8 @@ func GetUserIdFromSession(ctx context.Context) string {
 func GetUserIdInt64FromSession(ctx context.Context) (int64, error) {
 	idStr := NewContextBuilder(ctx).GetSession().GetUserId()
 	return strconv.ParseInt(idStr, 10, 64)
+}
+
+func GetRoleFromSession(ctx context.Context) Role {
+	return NewContextBuilder(ctx).GetSession().GetRole()
 }
