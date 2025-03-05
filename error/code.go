@@ -39,13 +39,14 @@ var (
 		ErrUnauthorizedAccessJti404:                  {Code: "ERR401004", Status: http.StatusUnauthorized, Message: "Unauthorized"},
 		ErrUnauthorizedAccessPrivileges404:           {Code: "ERR401005", Status: http.StatusUnauthorized, Message: "Unauthorized"},
 		ErrUnauthorizedAccessPrivilegesInvalidFormat: {Code: "ERR401006", Status: http.StatusUnauthorized, Message: "Unauthorized"},
-		ErrNotFound:           {Code: "ERR404007", Status: http.StatusNotFound, Message: "Not Found"},
-		ErrValidation:         {Code: "ERR400008", Status: http.StatusBadRequest, Message: "Bad Request"},
-		ErrInvalidCredentials: {Code: "ERR400009", Status: http.StatusBadRequest, Message: "Invalid Credentials"},
-		ErrForbidden:          {Code: "ERR403010", Status: http.StatusForbidden, Message: "Forbidden"},
-		ErrForbiddenPrivilege: {Code: "ERR403011", Status: http.StatusForbidden, Message: "Forbidden"},
-		ErrForbiddenStatus:    {Code: "ERR403012", Status: http.StatusForbidden, Message: "Forbidden"},
-		ErrTooManyRequests:    {Code: "ERR429013", Status: http.StatusTooManyRequests, Message: "Too Many Requests"},
+		ErrNotFound:                            {Code: "ERR404007", Status: http.StatusNotFound, Message: "Not Found"},
+		ErrValidation:                          {Code: "ERR400008", Status: http.StatusBadRequest, Message: "Bad Request"},
+		ErrInvalidCredentials:                  {Code: "ERR400009", Status: http.StatusBadRequest, Message: "Invalid Credentials"},
+		ErrForbidden:                           {Code: "ERR403010", Status: http.StatusForbidden, Message: "Forbidden"},
+		ErrForbiddenPrivilege:                  {Code: "ERR403011", Status: http.StatusForbidden, Message: "Forbidden"},
+		ErrForbiddenStatus:                     {Code: "ERR403012", Status: http.StatusForbidden, Message: "Forbidden"},
+		ErrTooManyRequests:                     {Code: "ERR429013", Status: http.StatusTooManyRequests, Message: "Too Many Requests"},
+		ErrUnauthorizedAccessRoleInvalidFormat: {Code: "ERR401014", Status: http.StatusUnauthorized, Message: "Unauthorized"},
 	}
 )
 
@@ -61,6 +62,7 @@ const (
 	ErrUnauthorizedAccessJti404
 	ErrUnauthorizedAccessPrivileges404
 	ErrUnauthorizedAccessPrivilegesInvalidFormat
+	ErrUnauthorizedAccessRoleInvalidFormat
 	ErrNotFound
 	ErrValidation
 	ErrForbidden

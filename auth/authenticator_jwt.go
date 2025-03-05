@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"encoding/json"
 	coreContext "github.com/harryosmar/go-echo-core/context"
 	coreError "github.com/harryosmar/go-echo-core/error"
 	signaturego "github.com/harryosmar/hash-go"
@@ -45,10 +46,24 @@ func (a AuthenticatorJwt) Check(ctx context.Context, token string) (*coreContext
 		privileges = append(privileges, pi.(string))
 	}
 
-	// @todo implement ACL privileges
+	roleInterface, found := mapClaims["role"]
+	if !found {
+		return nil, coreError.ErrUnauthorizedAccessRoleInvalidFormat
+	}
+	roleBytes, err := json.Marshal(roleInterface)
+	if err != nil {
+		return nil, coreError.ErrUnauthorizedAccessRoleInvalidFormat
+	}
+	var role coreContext.Role
+	err = json.Unmarshal(roleBytes, &role)
+	if err != nil {
+		return nil, coreError.ErrUnauthorizedAccessRoleInvalidFormat
+	}
+
 	return &coreContext.JwtClaim{
 		Sub:        sub.(string),
 		Jti:        jti.(string),
 		Privileges: privileges,
+		Role:       role,
 	}, nil
 }
