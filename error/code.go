@@ -47,6 +47,8 @@ var (
 		ErrForbiddenStatus:                     {Code: "ERR403012", Status: http.StatusForbidden, Message: "Forbidden"},
 		ErrTooManyRequests:                     {Code: "ERR429013", Status: http.StatusTooManyRequests, Message: "Too Many Requests"},
 		ErrUnauthorizedAccessRoleInvalidFormat: {Code: "ERR401014", Status: http.StatusUnauthorized, Message: "Unauthorized"},
+		ErrForbiddenMultipleSessionDetected:    {Code: "ERR401015", Status: http.StatusUnauthorized, Message: "Multiple Session detected."},
+		ErrForbiddenSessionNotFound:            {Code: "ERR401016", Status: http.StatusUnauthorized, Message: "Session not found."},
 	}
 )
 
@@ -70,6 +72,8 @@ const (
 	ErrTooManyRequests
 	ErrInvalidCredentials
 	ErrForbiddenStatus
+	ErrForbiddenMultipleSessionDetected
+	ErrForbiddenSessionNotFound
 )
 
 func (c CodeErr) Error() string {

@@ -6,6 +6,7 @@ import (
 	coreContext "github.com/harryosmar/go-echo-core/context"
 	coreError "github.com/harryosmar/go-echo-core/error"
 	signaturego "github.com/harryosmar/hash-go"
+	"time"
 )
 
 type AuthenticatorJwt struct {
@@ -14,6 +15,10 @@ type AuthenticatorJwt struct {
 
 func NewAuthenticatorJwt(signer signaturego.JwtSign) *AuthenticatorJwt {
 	return &AuthenticatorJwt{signer: signer}
+}
+
+func (a AuthenticatorJwt) Persist(ctx context.Context, claim *coreContext.JwtClaim, now time.Time) error {
+	return nil
 }
 
 func (a AuthenticatorJwt) Check(ctx context.Context, token string) (*coreContext.JwtClaim, error) {

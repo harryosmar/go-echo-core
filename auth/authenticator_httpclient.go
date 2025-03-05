@@ -6,6 +6,7 @@ import (
 	coreCtx "github.com/harryosmar/go-echo-core/context"
 	libraryhttpclientgo "github.com/harryosmar/http-client-go"
 	v2 "github.com/harryosmar/http-client-go/v2"
+	"time"
 )
 
 type (
@@ -23,6 +24,10 @@ type (
 		Sub string `json:"sub"`
 	}
 )
+
+func (a AuthenticatorHttpClient) Persist(ctx context.Context, claim *coreCtx.JwtClaim, now time.Time) error {
+	return nil
+}
 
 func NewAuthenticatorHttpClient(
 	httpClient libraryhttpclientgo.HttpClientRepository,
