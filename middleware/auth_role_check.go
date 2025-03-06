@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func AuthCheckMiddleware(authenticator auth.Authenticator) func(next echo.HandlerFunc) echo.HandlerFunc {
+func AuthRolesCheckMiddleware(authenticator auth.Authenticator, roles []string) func(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(e echo.Context) (err error) {
 			req := e.Request()
@@ -28,6 +28,17 @@ func AuthCheckMiddleware(authenticator auth.Authenticator) func(next echo.Handle
 				return err
 			}
 
+			isRoleValid := false
+			for _, role := range roles {
+				if checkResult.Role.Code == role {
+					isRoleValid = true
+					break
+				}
+			}
+			if !isRoleValid {
+				return coreError.ErrForbiddenInvalidRole
+			}
+
 			// set user session context
 			newCtx := coreCtx.NewContextBuilder(ctx).SetSession(coreCtx.NewSession(checkResult)).Context()
 			newRequest := req.Clone(newCtx)
@@ -37,5 +48,3 @@ func AuthCheckMiddleware(authenticator auth.Authenticator) func(next echo.Handle
 		}
 	}
 }
-
-

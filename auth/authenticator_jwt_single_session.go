@@ -34,7 +34,7 @@ func (a AuthenticatorJwtSingleSession) isValidSession(ctx context.Context, claim
 		return err
 	}
 	if !found {
-		return coreError.ErrForbiddenSessionNotFound
+		return coreError.ErrUnauthorizedSessionNotFound
 	}
 	actualJti := string(bytes)
 	if actualJti != claim.Jti {
