@@ -106,14 +106,26 @@ func (s session) IsHasPrivileges(privileges []string) error {
 }
 
 func GetUserIdFromSession(ctx context.Context) string {
-	return NewContextBuilder(ctx).GetSession().GetUserId()
+	s := NewContextBuilder(ctx).GetSession()
+	if s == nil {
+		return ""
+	}
+	return s.GetUserId()
 }
 
 func GetUserIdInt64FromSession(ctx context.Context) (int64, error) {
-	idStr := NewContextBuilder(ctx).GetSession().GetUserId()
+	s := NewContextBuilder(ctx).GetSession()
+	if s == nil {
+		return 0, coreError.ErrUnauthorizedAccess
+	}
+	idStr := s.GetUserId()
 	return strconv.ParseInt(idStr, 10, 64)
 }
 
 func GetRoleFromSession(ctx context.Context) Role {
-	return NewContextBuilder(ctx).GetSession().GetRole()
+	s := NewContextBuilder(ctx).GetSession()
+	if s == nil {
+		return Role{}
+	}
+	return s.GetRole()
 }
