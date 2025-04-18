@@ -12,10 +12,11 @@ import (
 type AuthenticatorJwtSingleSession struct {
 	authenticator *AuthenticatorJwt
 	cache         cache.CacheRepo
+	whiteJti      []string
 }
 
-func NewAuthenticatorJwtSingleSession(authenticator *AuthenticatorJwt, cache cache.CacheRepo) *AuthenticatorJwtSingleSession {
-	return &AuthenticatorJwtSingleSession{authenticator: authenticator, cache: cache}
+func NewAuthenticatorJwtSingleSession(authenticator *AuthenticatorJwt, cache cache.CacheRepo, whitelistJti []string) *AuthenticatorJwtSingleSession {
+	return &AuthenticatorJwtSingleSession{authenticator: authenticator, cache: cache, whiteJti: whitelistJti}
 }
 
 func (a AuthenticatorJwtSingleSession) Persist(ctx context.Context, claim *coreContext.JwtClaim, now time.Time) error {
@@ -28,6 +29,12 @@ func (a AuthenticatorJwtSingleSession) Persist(ctx context.Context, claim *coreC
 }
 
 func (a AuthenticatorJwtSingleSession) isValidSession(ctx context.Context, claim *coreContext.JwtClaim) error {
+	for _, v := range a.whiteJti {
+		if claim.Jti == v {
+			return nil
+		}
+	}
+
 	cacheKey := a.generateKey(claim.Sub)
 	bytes, found, err := a.cache.Get(ctx, cacheKey)
 	if err != nil {
