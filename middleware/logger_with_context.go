@@ -45,26 +45,19 @@ var (
 				LogValuesFunc: func(c echo.Context, values middleware.RequestLoggerValues) error {
 					request := c.Request()
 					loggerEntry := ctx.NewContextBuilder(request.Context()).GetLogger()
-					if !(values.Status >= 200 && values.Status < 299) && values.Error != nil {
+					if values.Error != nil {
 						loggerEntry.Error(values.Error)
+						return nil
 					}
-					//loggerEntry := GetLogEntryFromCtx(c.Request().Context())
-					//
-					//withFields := loggerEntry.WithFields(log.Fields{
-					//	"status": values.Status,
-					//})
-					//if values.Status >= 200 && values.Status <= 299 {
-					//	withFields.Info("response")
-					//} else {
-					//	withFields.Error("response")
-					//}
-
+					loggerEntry.Info("OK")
 					return nil
 				},
 			},
 		),
 		//middleware.BodyDump(func(c echo.Context, reqBody, resBody []byte) {
-		//	loggerEntry := logger.GetLogEntryFromCtx(c.Request().Context())
+		// disable create duplicated content
+		//	request := c.Request()
+		//	loggerEntry := ctx.NewContextBuilder(request.Context()).GetLogger()
 		//	loggerEntry.WithFields(log.Fields{
 		//		"content": string(resBody),
 		//	}).Info("res_body")
