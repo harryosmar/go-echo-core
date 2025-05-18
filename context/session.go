@@ -2,9 +2,10 @@ package ctx
 
 import (
 	"context"
+	"strconv"
+
 	"github.com/golang-jwt/jwt/v5"
 	coreError "github.com/harryosmar/go-echo-core/error"
-	"strconv"
 )
 
 type (
@@ -18,6 +19,7 @@ type (
 		Jti        string   `json:"jti"`
 		Privileges []string `json:"privileges"`
 		Role       Role     `json:"role"`
+		Platform   string   `json:"platform"`
 	}
 
 	Role struct {
