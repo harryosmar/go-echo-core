@@ -3,10 +3,11 @@ package auth
 import (
 	"context"
 	"fmt"
+	"time"
+
 	cache "github.com/harryosmar/cache-go"
 	coreContext "github.com/harryosmar/go-echo-core/context"
 	coreError "github.com/harryosmar/go-echo-core/error"
-	"time"
 )
 
 type AuthenticatorJwtSingleSession struct {
@@ -22,7 +23,7 @@ func NewAuthenticatorJwtSingleSession(authenticator *AuthenticatorJwt, cache cac
 func (a AuthenticatorJwtSingleSession) Persist(ctx context.Context, claim *coreContext.JwtClaim, now time.Time) error {
 	return a.cache.Store(
 		ctx,
-		a.generateKey(claim.Sub),
+		a.generateKey(fmt.Sprintf("%s:%s", claim.Platform, claim.Sub)),
 		[]byte(claim.Jti),
 		time.Duration(claim.Exp-now.Unix())*time.Second,
 	)
@@ -35,7 +36,7 @@ func (a AuthenticatorJwtSingleSession) isValidSession(ctx context.Context, claim
 		}
 	}
 
-	cacheKey := a.generateKey(claim.Sub)
+	cacheKey := a.generateKey(fmt.Sprintf("%s:%s", claim.Platform, claim.Sub))
 	bytes, found, err := a.cache.Get(ctx, cacheKey)
 	if err != nil {
 		return err
