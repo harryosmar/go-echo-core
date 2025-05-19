@@ -52,6 +52,7 @@ func (j JwtClaim) ToJwtClaim() *jwt.MapClaims {
 		"jti":        j.Jti,
 		"privileges": j.Privileges,
 		"role":       j.Role,
+		"platform":   j.Platform,
 	}
 }
 
