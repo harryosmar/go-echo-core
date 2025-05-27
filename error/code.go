@@ -50,6 +50,7 @@ var (
 		ErrForbiddenMultipleSessionDetected:    {Code: "ERR403015", Status: http.StatusUnauthorized, Message: "Multiple Session detected."},
 		ErrUnauthorizedSessionNotFound:         {Code: "ERR401016", Status: http.StatusUnauthorized, Message: "Session not found."},
 		ErrForbiddenInvalidRole:                {Code: "ERR403017", Status: http.StatusUnauthorized, Message: "Forbidden role not allowed."},
+		ErrUnauthorizedAccessPlatform404:       {Code: "ERR401018", Status: http.StatusUnauthorized, Message: "Platform not found."},
 	}
 )
 
@@ -66,6 +67,7 @@ const (
 	ErrUnauthorizedAccessPrivileges404
 	ErrUnauthorizedAccessPrivilegesInvalidFormat
 	ErrUnauthorizedAccessRoleInvalidFormat
+	ErrUnauthorizedAccessPlatform404
 	ErrNotFound
 	ErrValidation
 	ErrForbidden
