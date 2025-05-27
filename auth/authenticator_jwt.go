@@ -3,10 +3,11 @@ package auth
 import (
 	"context"
 	"encoding/json"
+	"time"
+
 	coreContext "github.com/harryosmar/go-echo-core/context"
 	coreError "github.com/harryosmar/go-echo-core/error"
 	signaturego "github.com/harryosmar/hash-go"
-	"time"
 )
 
 type AuthenticatorJwt struct {
@@ -65,10 +66,16 @@ func (a AuthenticatorJwt) Check(ctx context.Context, token string) (*coreContext
 		return nil, coreError.ErrUnauthorizedAccessRoleInvalidFormat
 	}
 
+	platformInterface, found := mapClaims["platform"]
+	if !found {
+		return nil, coreError.ErrUnauthorizedAccessPlatform404
+	}
+	platform := platformInterface.(string)
 	return &coreContext.JwtClaim{
 		Sub:        sub.(string),
 		Jti:        jti.(string),
 		Privileges: privileges,
 		Role:       role,
+		Platform:   platform,
 	}, nil
 }
