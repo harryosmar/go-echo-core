@@ -16,7 +16,7 @@ var (
 		Out: os.Stdout,
 		Formatter: &log.JSONFormatter{
 			TimestampFormat: time.RFC3339Nano,
-			PrettyPrint:     true,
+			PrettyPrint:     false,
 		},
 		//Formatter:    &log.TextFormatter{},
 		Hooks:        make(log.LevelHooks),
