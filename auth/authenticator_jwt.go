@@ -71,11 +71,18 @@ func (a AuthenticatorJwt) Check(ctx context.Context, token string) (*coreContext
 		return nil, coreError.ErrUnauthorizedAccessPlatform404
 	}
 	platform := platformInterface.(string)
+
+	usernameInterface, found := mapClaims["username"]
+	if !found {
+		return nil, coreError.ErrUnauthorizedAccessUsername404
+	}
+	username := usernameInterface.(string)
 	return &coreContext.JwtClaim{
 		Sub:        sub.(string),
 		Jti:        jti.(string),
 		Privileges: privileges,
 		Role:       role,
 		Platform:   platform,
+		Username:   username,
 	}, nil
 }

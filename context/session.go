@@ -20,6 +20,7 @@ type (
 		Privileges []string `json:"privileges"`
 		Role       Role     `json:"role"`
 		Platform   string   `json:"platform"`
+		Username   string   `json:"username"`
 	}
 
 	Role struct {
@@ -53,6 +54,7 @@ func (j JwtClaim) ToJwtClaim() *jwt.MapClaims {
 		"privileges": j.Privileges,
 		"role":       j.Role,
 		"platform":   j.Platform,
+		"username":   j.Username,
 	}
 }
 
