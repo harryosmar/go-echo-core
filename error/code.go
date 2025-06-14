@@ -51,6 +51,7 @@ var (
 		ErrUnauthorizedSessionNotFound:         {Code: "ERR401016", Status: http.StatusUnauthorized, Message: "Session not found."},
 		ErrForbiddenInvalidRole:                {Code: "ERR403017", Status: http.StatusUnauthorized, Message: "Forbidden role not allowed."},
 		ErrUnauthorizedAccessPlatform404:       {Code: "ERR401018", Status: http.StatusUnauthorized, Message: "Platform not found."},
+		ErrUnauthorizedAccessUsername404:       {Code: "ERR401019", Status: http.StatusUnauthorized, Message: "Username not found."},
 	}
 )
 
@@ -68,6 +69,7 @@ const (
 	ErrUnauthorizedAccessPrivilegesInvalidFormat
 	ErrUnauthorizedAccessRoleInvalidFormat
 	ErrUnauthorizedAccessPlatform404
+	ErrUnauthorizedAccessUsername404
 	ErrNotFound
 	ErrValidation
 	ErrForbidden
