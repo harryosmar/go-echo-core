@@ -1,17 +1,23 @@
 package middleware
 
 import (
+	genericgorm "github.com/harryosmar/generic-gorm"
 	"github.com/harryosmar/go-echo-core/auth"
 	coreCtx "github.com/harryosmar/go-echo-core/context"
 	coreError "github.com/harryosmar/go-echo-core/error"
 	"github.com/labstack/echo/v4"
+	log "github.com/sirupsen/logrus"
 	"strings"
 )
 
-func AuthRolesCheckMiddleware(authenticator auth.Authenticator, roles []string) func(next echo.HandlerFunc) echo.HandlerFunc {
+func AuthRolesCheckMiddleware(authenticator auth.Authenticator, roles []string) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(e echo.Context) (err error) {
 			req := e.Request()
+			ctx := req.Context()
+			contextBuilder := coreCtx.NewContextBuilder(ctx)
+			logger := contextBuilder.GetLogger()
+
 			authorizationStr := req.Header.Get(echo.HeaderAuthorization)
 			tokenParts := strings.Split(authorizationStr, " ")
 			if len(tokenParts) != 2 {
@@ -22,11 +28,15 @@ func AuthRolesCheckMiddleware(authenticator auth.Authenticator, roles []string) 
 			}
 			token := tokenParts[1]
 
-			ctx := req.Context()
 			checkResult, err := authenticator.Check(ctx, token)
 			if err != nil {
 				return err
 			}
+			// set user session context
+			logger = logger.WithFields(log.Fields{
+				"session_id": checkResult.Jti,
+				"user_id":    checkResult.Username,
+			})
 
 			isRoleValid := false
 			for _, role := range roles {
@@ -40,7 +50,15 @@ func AuthRolesCheckMiddleware(authenticator auth.Authenticator, roles []string) 
 			}
 
 			// set user session context
-			newCtx := coreCtx.NewContextBuilder(ctx).SetSession(coreCtx.NewSession(checkResult)).Context()
+			newCtx := coreCtx.NewContextBuilder(ctx).
+				SetSession(coreCtx.NewSession(checkResult)).
+				SetLogger(logger).
+				Context()
+
+			// gorm context logger
+			newCtx = genericgorm.ContextWithLogger(newCtx, logger)
+
+			// set new context to request
 			newRequest := req.Clone(newCtx)
 			e.SetRequest(newRequest)
 

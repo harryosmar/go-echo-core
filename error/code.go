@@ -83,7 +83,16 @@ const (
 )
 
 func (c CodeErr) Error() string {
-	return codeErrMap[c].ErrorMessage
+	if errEntity, found := codeErrMap[c]; found {
+		message := errEntity.ErrorMessage
+		if message != "" {
+			return message
+		}
+
+		return fmt.Sprintf("[%s] %s", errEntity.Code, errEntity.Message)
+	}
+
+	return ""
 }
 
 func (c CodeErr) String() string {
